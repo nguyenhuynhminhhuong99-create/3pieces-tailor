@@ -96,10 +96,7 @@
   <div class="hero-line"></div>
   <div class="hero-brand">3Pieces Tailor</div>
   <div class="hero-sub">Bespoke Suit &amp; Handcrafted Leather Shoes</div>
-  <div class="hero-title">
-    Chao mung ban den voi hanh trinh may do<br>
-    <em>Welcome to your bespoke journey</em>
-  </div>
+  <div class="hero-title">Chao mung ban den voi hanh trinh may do<br><em>Welcome to your bespoke journey</em></div>
 </div>
 <div class="progress-wrap" id="progressWrap">
   <div class="step-dot"><div class="dot-circle active" id="dot1">1</div><div class="dot-label active" id="lbl1">Thong tin<br>Info</div></div>
@@ -184,9 +181,9 @@
         <select id="recv-month" onchange="rebuildDays('recv')"></select>
         <select id="recv-year" onchange="rebuildDays('recv')"></select>
       </div>
-      <div class="date-hint">It nhat 7 ngay sau fitting<br>At least 7 days after fitting date</div>
+      <div class="date-hint">Ngay ban muon nhan do<br>Your expected delivery date</div>
     </div>
-    <div class="date-err" id="err-receive">Ngay nhan phai sau fitting 7 ngay / Must be 7+ days after fitting</div>
+    <div class="date-err" id="err-receive">Vui long chon ngay nhan / Please select delivery date</div>
     <div class="btn-row">
       <button class="btn-back" onclick="goPrev(3)">&#8592; Back</button>
       <button class="btn-next" onclick="goNext(3)">Next &rarr;</button>
@@ -296,8 +293,9 @@ function v3(){
   document.getElementById('dc-fitting').classList.toggle('invalid',!fit);
   document.getElementById('err-fitting').classList.toggle('show',!fit);
   if(!fit)ok=false;
-  if(fit&&recv){var bad=(new Date(recv)-new Date(fit))/86400000<7;document.getElementById('dc-receive').classList.toggle('invalid',bad);document.getElementById('err-receive').classList.toggle('show',bad);if(bad)ok=false;}
-  else{document.getElementById('dc-receive').classList.toggle('invalid',!recv);document.getElementById('err-receive').classList.toggle('show',!recv);if(!recv)ok=false;}
+  document.getElementById('dc-receive').classList.toggle('invalid',!recv);
+  document.getElementById('err-receive').classList.toggle('show',!recv);
+  if(!recv)ok=false;
   return ok;
 }
 function goNext(step){
