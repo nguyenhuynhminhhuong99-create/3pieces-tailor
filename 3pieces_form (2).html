@@ -3,481 +3,368 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>3Pieces Tailor - Dang Ky May Do</title>
+<title>3Pieces Tailor - Booking</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #F7F3EC; --dark: #18140E; --gold: #B8903C;
-    --gold-pale: #F5EDD8; --muted: #8A8070;
-    --border: rgba(184,144,60,0.2); --error: #9B3A2A;
-    --white: #FFFFFF; --radius: 12px; --radius-sm: 8px;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  body { background: var(--bg); color: var(--dark); font-family: 'DM Sans', sans-serif; min-height: 100vh; padding-bottom: 3rem; }
-
-  .hero { background: var(--dark); padding: 2.5rem 1.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
-  .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 100%, rgba(184,144,60,0.15) 0%, transparent 70%); pointer-events: none; }
-  .hero-line { width: 32px; height: 1px; background: var(--gold); margin: 0 auto 1.25rem; }
-  .hero-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; font-weight: 500; letter-spacing: 0.08em; color: #F0EAD8; margin-bottom: 4px; }
-  .hero-sub { font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
-  .hero-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-style: italic; color: rgba(240,234,216,0.7); line-height: 1.5; }
-
-  .progress-wrap { display: flex; align-items: center; justify-content: center; padding: 1.5rem 2rem 0; }
-  .step-dot { display: flex; flex-direction: column; align-items: center; gap: 6px; }
-  .dot-circle { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--white); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 500; color: var(--muted); transition: all 0.3s; }
-  .dot-circle.active { background: var(--dark); border-color: var(--gold); color: var(--gold); }
-  .dot-circle.done { background: var(--gold); border-color: var(--gold); color: var(--white); }
-  .dot-label { font-size: 0.6rem; color: var(--muted); text-align: center; white-space: nowrap; }
-  .dot-label.active { color: var(--dark); font-weight: 500; }
-  .step-line { flex: 1; height: 1px; background: var(--border); margin: 0 4px 18px; transition: background 0.3s; }
-  .step-line.done { background: var(--gold); }
-
-  .form-wrap { padding: 1.75rem 1.25rem 0; max-width: 480px; margin: 0 auto; }
-  .step-panel { display: none; }
-  .step-panel.active { display: block; animation: fadeIn 0.3s ease; }
-  @keyframes fadeIn { from { opacity: 0; transform: translateX(12px); } to { opacity: 1; transform: translateX(0); } }
-  .panel-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 500; margin-bottom: 0.35rem; }
-  .panel-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; margin-bottom: 1.75rem; }
-
-  .field { margin-bottom: 1.25rem; }
-  .field label { display: block; font-size: 0.7rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
-  .field input, .field select, .field textarea { width: 100%; background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.875rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 1rem; color: var(--dark); outline: none; transition: border-color 0.2s; appearance: none; -webkit-appearance: none; }
-  .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,144,60,0.08); }
-  .field input::placeholder, .field textarea::placeholder { color: #C8BFB0; }
-  .field select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B8903C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 1rem center; padding-right: 2.5rem; cursor: pointer; }
-  .field textarea { resize: none; line-height: 1.6; }
-  .field.invalid input, .field.invalid select, .field.invalid textarea { border-color: var(--error); }
-  .err { font-size: 0.72rem; color: var(--error); margin-top: 0.35rem; display: none; }
-  .field.invalid .err { display: block; }
-
-  .type-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
-  .type-card { border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1rem 0.875rem; background: var(--white); cursor: pointer; transition: all 0.2s; position: relative; }
-  .type-card.selected { border-color: var(--gold); background: var(--gold-pale); }
-  .type-card.selected::after { content: '\2713'; position: absolute; top: 8px; right: 10px; font-size: 0.7rem; color: var(--gold); font-weight: 700; }
-  .type-card-icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
-  .type-card-name { font-size: 0.825rem; font-weight: 500; line-height: 1.3; }
-  .type-card-desc { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
-  #field-type-err { font-size: 0.72rem; color: var(--error); display: none; margin-top: -0.5rem; margin-bottom: 1rem; }
-
-  .date-card { background: var(--white); border: 1.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin-bottom: 0.5rem; transition: border-color 0.2s; }
-  .date-card.invalid { border-color: var(--error); }
-  .date-card-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
-  .date-selects { display: grid; grid-template-columns: 1.1fr 1.3fr 1.3fr; gap: 0.5rem; }
-  .date-selects select { border: 1.5px solid var(--border); border-radius: var(--radius-sm); padding: 0.7rem 0.3rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; color: var(--dark); background: var(--bg); text-align: center; cursor: pointer; outline: none; appearance: none; -webkit-appearance: none; width: 100%; }
-  .date-selects select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(184,144,60,0.08); }
-  .date-hint { font-size: 0.7rem; color: var(--muted); margin-top: 0.6rem; }
-  .date-err { font-size: 0.72rem; color: var(--error); margin-bottom: 1rem; display: none; }
-  .date-err.show { display: block; }
-
-  .btn-row { display: flex; gap: 0.75rem; margin-top: 2rem; }
-  .btn-back { flex: 0 0 auto; padding: 0.9rem 1.25rem; background: transparent; border: 1.5px solid var(--border); border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--muted); cursor: pointer; }
-  .btn-next { flex: 1; padding: 0.9rem; background: var(--dark); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500; color: #F0EAD8; cursor: pointer; transition: background 0.2s; }
-  .btn-next:active { transform: scale(0.98); }
-  .btn-next.loading { opacity: 0.7; pointer-events: none; }
-
-  .review-card { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 1.5rem; }
-  .review-header { background: var(--dark); padding: 1rem 1.25rem; display: flex; align-items: center; gap: 0.75rem; }
-  .review-header-title { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-weight: 500; color: #F0EAD8; }
-  .review-header-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold); }
-  .review-row { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding: 0.75rem 1.25rem; border-bottom: 1px solid rgba(184,144,60,0.08); font-size: 0.85rem; }
-  .review-row:last-child { border-bottom: none; }
-  .rk { color: var(--muted); font-size: 0.75rem; flex-shrink: 0; }
-  .rv { color: var(--dark); font-weight: 500; text-align: right; }
-
-  .success-screen { display: none; text-align: center; padding: 3rem 1.5rem; animation: fadeIn 0.4s ease; }
-  .success-ring { width: 64px; height: 64px; border: 1.5px solid var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem; }
-  .success-ring svg { stroke: var(--gold); }
-  .success-h { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; margin-bottom: 0.75rem; }
-  .success-p { font-size: 0.875rem; color: var(--muted); line-height: 1.7; margin-bottom: 2rem; }
-  .btn-again { width: 100%; padding: 0.9rem; background: var(--dark); border: none; border-radius: var(--radius-sm); font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500; color: #F0EAD8; cursor: pointer; }
-
-  .footer { text-align: center; padding: 2rem 1rem 1rem; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(138,128,112,0.4); }
+  :root { --bg:#F7F3EC;--dark:#18140E;--gold:#B8903C;--gold-pale:#F5EDD8;--muted:#8A8070;--border:rgba(184,144,60,0.2);--error:#9B3A2A;--white:#FFFFFF;--radius:12px;--radius-sm:8px; }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  body{background:var(--bg);color:var(--dark);font-family:'DM Sans',sans-serif;min-height:100vh;padding-bottom:3rem;}
+  .hero{background:var(--dark);padding:2.5rem 1.5rem 2rem;text-align:center;position:relative;overflow:hidden;}
+  .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(184,144,60,0.15) 0%,transparent 70%);pointer-events:none;}
+  .hero-line{width:32px;height:1px;background:var(--gold);margin:0 auto 1.25rem;}
+  .hero-brand{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:500;letter-spacing:0.08em;color:#F0EAD8;margin-bottom:4px;}
+  .hero-sub{font-size:0.6rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.5rem;}
+  .hero-title{font-family:'Cormorant Garamond',serif;font-size:1.1rem;font-style:italic;color:rgba(240,234,216,0.7);line-height:1.6;}
+  .progress-wrap{display:flex;align-items:center;justify-content:center;padding:1.5rem 2rem 0;}
+  .step-dot{display:flex;flex-direction:column;align-items:center;gap:6px;}
+  .dot-circle{width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:var(--white);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:500;color:var(--muted);transition:all 0.3s;}
+  .dot-circle.active{background:var(--dark);border-color:var(--gold);color:var(--gold);}
+  .dot-circle.done{background:var(--gold);border-color:var(--gold);color:var(--white);}
+  .dot-label{font-size:0.55rem;color:var(--muted);text-align:center;white-space:nowrap;line-height:1.4;}
+  .dot-label.active{color:var(--dark);font-weight:500;}
+  .step-line{flex:1;height:1px;background:var(--border);margin:0 4px 22px;transition:background 0.3s;}
+  .step-line.done{background:var(--gold);}
+  .form-wrap{padding:1.75rem 1.25rem 0;max-width:480px;margin:0 auto;}
+  .step-panel{display:none;}
+  .step-panel.active{display:block;animation:fadeIn 0.3s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateX(12px);}to{opacity:1;transform:translateX(0);}}
+  .panel-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:500;margin-bottom:2px;}
+  .panel-title-sub{font-size:0.75rem;color:var(--muted);font-style:italic;margin-bottom:1.5rem;}
+  .field{margin-bottom:1.25rem;}
+  .field label{display:block;font-size:0.7rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:0.5rem;}
+  .field label span{font-weight:400;font-style:italic;margin-left:4px;}
+  .field input,.field select,.field textarea{width:100%;background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:0.875rem 1rem;font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--dark);outline:none;transition:border-color 0.2s;appearance:none;-webkit-appearance:none;}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,144,60,0.08);}
+  .field input::placeholder,.field textarea::placeholder{color:#C8BFB0;}
+  .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23B8903C' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 1rem center;padding-right:2.5rem;cursor:pointer;}
+  .field textarea{resize:none;line-height:1.6;}
+  .field.invalid input,.field.invalid select,.field.invalid textarea{border-color:var(--error);}
+  .err{font-size:0.72rem;color:var(--error);margin-top:0.35rem;display:none;}
+  .field.invalid .err{display:block;}
+  .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.25rem;}
+  .type-card{border:1.5px solid var(--border);border-radius:var(--radius);padding:0.875rem;background:var(--white);cursor:pointer;transition:all 0.2s;position:relative;}
+  .type-card.selected{border-color:var(--gold);background:var(--gold-pale);}
+  .type-card.selected::after{content:'\2713';position:absolute;top:8px;right:10px;font-size:0.7rem;color:var(--gold);font-weight:700;}
+  .type-card-icon{font-size:1.3rem;margin-bottom:0.4rem;}
+  .type-card-name{font-size:0.8rem;font-weight:500;line-height:1.3;color:var(--dark);}
+  .type-card-en{font-size:0.65rem;color:var(--muted);margin-top:1px;font-style:italic;}
+  #field-type-err{font-size:0.72rem;color:var(--error);display:none;margin-top:-0.5rem;margin-bottom:1rem;}
+  .section-label{font-size:0.7rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--muted);margin-bottom:0.6rem;}
+  .canvas-wrap{margin-bottom:1.25rem;}
+  .canvas-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;}
+  .canvas-card{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:0.75rem 0.5rem;background:var(--white);cursor:pointer;transition:all 0.2s;text-align:center;position:relative;}
+  .canvas-card.selected{border-color:var(--gold);background:var(--gold-pale);}
+  .canvas-card.selected::after{content:'\2713';position:absolute;top:5px;right:7px;font-size:0.65rem;color:var(--gold);font-weight:700;}
+  .canvas-card-name{font-size:0.8rem;font-weight:500;color:var(--dark);}
+  .canvas-card-en{font-size:0.62rem;color:var(--muted);margin-top:2px;font-style:italic;}
+  #field-canvas-err{font-size:0.72rem;color:var(--error);display:none;margin-top:0.35rem;margin-bottom:1rem;}
+  .date-card{background:var(--white);border:1.5px solid var(--border);border-radius:var(--radius);padding:1.25rem;margin-bottom:0.5rem;transition:border-color 0.2s;}
+  .date-card.invalid{border-color:var(--error);}
+  .date-card-label{font-size:0.65rem;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem;}
+  .date-selects{display:grid;grid-template-columns:1.1fr 1.3fr 1.3fr;gap:0.5rem;}
+  .date-selects select{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:0.7rem 0.3rem;font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;color:var(--dark);background:var(--bg);text-align:center;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;width:100%;}
+  .date-selects select:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(184,144,60,0.08);}
+  .date-hint{font-size:0.68rem;color:var(--muted);margin-top:0.5rem;line-height:1.5;}
+  .date-err{font-size:0.72rem;color:var(--error);margin-bottom:1rem;display:none;}
+  .date-err.show{display:block;}
+  .btn-row{display:flex;gap:0.75rem;margin-top:2rem;}
+  .btn-back{flex:0 0 auto;padding:0.9rem 1.25rem;background:transparent;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.875rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+  .btn-back:active{opacity:0.7;}
+  .btn-next{flex:1;padding:0.9rem;background:var(--dark);border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;color:#F0EAD8;cursor:pointer;transition:background 0.2s;}
+  .btn-next:active{transform:scale(0.98);}
+  .btn-next.loading{opacity:0.7;pointer-events:none;}
+  .review-card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1.5rem;}
+  .review-header{background:var(--dark);padding:1rem 1.25rem;display:flex;align-items:center;gap:0.75rem;}
+  .review-header-title{font-family:'Cormorant Garamond',serif;font-size:1rem;font-weight:500;color:#F0EAD8;}
+  .review-header-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);}
+  .review-row{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:0.75rem 1.25rem;border-bottom:1px solid rgba(184,144,60,0.08);font-size:0.85rem;}
+  .review-row:last-child{border-bottom:none;}
+  .rk{color:var(--muted);font-size:0.72rem;flex-shrink:0;line-height:1.5;}
+  .rv{color:var(--dark);font-weight:500;text-align:right;}
+  .success-screen{display:none;text-align:center;padding:3rem 1.5rem;animation:fadeIn 0.4s ease;}
+  .success-ring{width:64px;height:64px;border:1.5px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem;}
+  .success-ring svg{stroke:var(--gold);}
+  .success-h{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:400;margin-bottom:0.5rem;}
+  .success-h-en{font-size:0.8rem;color:var(--muted);font-style:italic;margin-bottom:1.5rem;}
+  .success-p{font-size:0.875rem;color:var(--muted);line-height:1.8;margin-bottom:2rem;}
+  .btn-again{width:100%;padding:0.9rem;background:var(--dark);border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.8rem;font-weight:500;color:#F0EAD8;cursor:pointer;line-height:1.5;}
+  .footer{text-align:center;padding:2rem 1rem 1rem;font-size:0.65rem;letter-spacing:0.15em;text-transform:uppercase;color:rgba(138,128,112,0.4);}
 </style>
 </head>
 <body>
-
 <div class="hero">
   <div class="hero-line"></div>
   <div class="hero-brand">3Pieces Tailor</div>
-  <div class="hero-sub">Bespoke Suit &amp; Giay Da Thu Cong</div>
-  <div class="hero-title">Chao mung ban den voi<br>hanh trinh may do cua minh</div>
+  <div class="hero-sub">Bespoke Suit &amp; Handcrafted Leather Shoes</div>
+  <div class="hero-title">Chao mung ban den voi hanh trinh may do<br><em>Welcome to your bespoke journey</em></div>
 </div>
-
 <div class="progress-wrap" id="progressWrap">
-  <div class="step-dot"><div class="dot-circle active" id="dot1">1</div><div class="dot-label active" id="lbl1">Thong tin</div></div>
+  <div class="step-dot"><div class="dot-circle active" id="dot1">1</div><div class="dot-label active" id="lbl1">Thong tin<br>Info</div></div>
   <div class="step-line" id="line1"></div>
-  <div class="step-dot"><div class="dot-circle" id="dot2">2</div><div class="dot-label" id="lbl2">Loai may</div></div>
+  <div class="step-dot"><div class="dot-circle" id="dot2">2</div><div class="dot-label" id="lbl2">Loai may<br>Type</div></div>
   <div class="step-line" id="line2"></div>
-  <div class="step-dot"><div class="dot-circle" id="dot3">3</div><div class="dot-label" id="lbl3">Lich hen</div></div>
+  <div class="step-dot"><div class="dot-circle" id="dot3">3</div><div class="dot-label" id="lbl3">Lich hen<br>Schedule</div></div>
   <div class="step-line" id="line3"></div>
-  <div class="step-dot"><div class="dot-circle" id="dot4">4</div><div class="dot-label" id="lbl4">Xac nhan</div></div>
+  <div class="step-dot"><div class="dot-circle" id="dot4">4</div><div class="dot-label" id="lbl4">Xac nhan<br>Confirm</div></div>
 </div>
-
 <div class="form-wrap">
-
-  <!-- STEP 1 -->
   <div class="step-panel active" id="step1">
     <div class="panel-title">Thong tin cua ban</div>
-    <div class="panel-desc">Chung toi se lien he de xac nhan lich hen.</div>
+    <div class="panel-title-sub">Your information</div>
     <div class="field" id="field-name">
-      <label>Ho &amp; Ten *</label>
+      <label>Ho &amp; Ten <span>/ Full name *</span></label>
       <input type="text" id="inp-name" placeholder="Nguyen Van A" autocomplete="name">
-      <div class="err">Vui long nhap ho ten</div>
+      <div class="err">Vui long nhap ho ten / Please enter your name</div>
     </div>
     <div class="field" id="field-phone">
-      <label>So dien thoai *</label>
+      <label>So dien thoai <span>/ Phone number *</span></label>
       <input type="tel" id="inp-phone" placeholder="09xx xxx xxx" inputmode="tel">
-      <div class="err">Vui long nhap SDT hop le</div>
+      <div class="err">Vui long nhap SDT hop le / Invalid phone number</div>
     </div>
     <div class="field" id="field-address">
-      <label>Dia chi *</label>
-      <input type="text" id="inp-address" placeholder="So nha, duong, quan, thanh pho...">
-      <div class="err">Vui long nhap dia chi</div>
+      <label>Dia chi <span>/ Address *</span></label>
+      <input type="text" id="inp-address" placeholder="So nha, duong, quan... / Street, district...">
+      <div class="err">Vui long nhap dia chi / Please enter your address</div>
     </div>
-    <div class="btn-row">
-      <button class="btn-next" onclick="goNext(1)">Tiep theo &rarr;</button>
-    </div>
+    <div class="btn-row"><button class="btn-next" onclick="goNext(1)">Next &rarr;</button></div>
   </div>
-
-  <!-- STEP 2 -->
   <div class="step-panel" id="step2">
     <div class="panel-title">Loai may do</div>
-    <div class="panel-desc">Chon san pham ban muon dat may.</div>
+    <div class="panel-title-sub">Select garment type</div>
     <div class="type-grid">
-      <div class="type-card" data-value="Suit 2 manh" onclick="selectType(this)">
-        <div class="type-card-icon">&#x1F9E5;</div>
-        <div class="type-card-name">Suit 2 manh</div>
-        <div class="type-card-desc">Ao + quan</div>
-      </div>
-      <div class="type-card" data-value="Suit 3 manh" onclick="selectType(this)">
-        <div class="type-card-icon">&#x1F454;</div>
-        <div class="type-card-name">Suit 3 manh</div>
-        <div class="type-card-desc">Ao + quan + vest</div>
-      </div>
-      <div class="type-card" data-value="So mi may do" onclick="selectType(this)">
-        <div class="type-card-icon">&#x1F455;</div>
-        <div class="type-card-name">So mi may do</div>
-        <div class="type-card-desc">Vai tuy chon</div>
-      </div>
-      <div class="type-card" data-value="Quan tay" onclick="selectType(this)">
-        <div class="type-card-icon">&#x1F456;</div>
-        <div class="type-card-name">Quan tay</div>
-        <div class="type-card-desc">May rieng le</div>
-      </div>
-      <div class="type-card" data-value="Combo Suit + So mi" onclick="selectType(this)">
-        <div class="type-card-icon">&#x2728;</div>
-        <div class="type-card-name">Combo tron bo</div>
-        <div class="type-card-desc">Suit + so mi</div>
-      </div>
-      <div class="type-card" data-value="Jacket / Blazer" onclick="selectType(this)">
-        <div class="type-card-icon">&#x1FA61;</div>
-        <div class="type-card-name">Jacket / Blazer</div>
-        <div class="type-card-desc">May rieng le</div>
-      </div>
+      <div class="type-card" data-value="Suit 2 manh" onclick="selectType(this)"><div class="type-card-icon">&#x1F9E5;</div><div class="type-card-name">Suit 2 manh</div><div class="type-card-en">2-piece suit</div></div>
+      <div class="type-card" data-value="Suit 3 manh" onclick="selectType(this)"><div class="type-card-icon">&#x1F454;</div><div class="type-card-name">Suit 3 manh</div><div class="type-card-en">3-piece suit</div></div>
+      <div class="type-card" data-value="Tuxedo" onclick="selectType(this)"><div class="type-card-icon">&#x1F3A9;</div><div class="type-card-name">Tuxedo</div><div class="type-card-en">Formal evening wear</div></div>
+      <div class="type-card" data-value="Jacket / Blazer" onclick="selectType(this)"><div class="type-card-icon">&#x1FA61;</div><div class="type-card-name">Jacket / Blazer</div><div class="type-card-en">Single piece</div></div>
+      <div class="type-card" data-value="So mi may do" onclick="selectType(this)"><div class="type-card-icon">&#x1F455;</div><div class="type-card-name">So mi may do</div><div class="type-card-en">Bespoke shirt</div></div>
+      <div class="type-card" data-value="Combo 3 so mi" onclick="selectType(this)"><div class="type-card-icon">&#x1F4E6;</div><div class="type-card-name">Combo 3 so mi</div><div class="type-card-en">3 shirts package</div></div>
+      <div class="type-card" data-value="Quan tay" onclick="selectType(this)"><div class="type-card-icon">&#x1F456;</div><div class="type-card-name">Quan tay</div><div class="type-card-en">Dress trousers</div></div>
+      <div class="type-card" data-value="Combo 3 quan" onclick="selectType(this)"><div class="type-card-icon">&#x1F6CD;</div><div class="type-card-name">Combo 3 quan</div><div class="type-card-en">3 trousers package</div></div>
     </div>
-    <div id="field-type-err">Vui long chon loai may do</div>
+    <div id="field-type-err">Vui long chon loai may do / Please select a garment type</div>
     <div class="field">
-      <label>Ghi chu them (khong bat buoc)</label>
-      <textarea id="inp-note" rows="3" placeholder="Vi du: can gap cho dam cuoi 15/5..."></textarea>
+      <label>Ghi chu <span>/ Notes (optional)</span></label>
+      <textarea id="inp-note" rows="3" placeholder="Vi du / e.g.: Wedding on May 15, slightly sloping shoulders..."></textarea>
     </div>
     <div class="btn-row">
-      <button class="btn-back" onclick="goPrev(2)">&larr; Quay lai</button>
-      <button class="btn-next" onclick="goNext(2)">Tiep theo &rarr;</button>
+      <button class="btn-back" onclick="goPrev(2)">&#8592; Back</button>
+      <button class="btn-next" onclick="goNext(2)">Next &rarr;</button>
     </div>
   </div>
-
-  <!-- STEP 3 -->
   <div class="step-panel" id="step3">
     <div class="panel-title">Lich hen</div>
-    <div class="panel-desc">Chon ngay den thu do va ngay muon nhan.</div>
-
+    <div class="panel-title-sub">Schedule &amp; fabric construction</div>
+    <div class="canvas-wrap">
+      <div class="section-label">Chat lieu canvas / Fabric construction *</div>
+      <div class="canvas-grid">
+        <div class="canvas-card" data-value="Fused" onclick="selectCanvas(this)"><div class="canvas-card-name">Fused</div><div class="canvas-card-en">Standard / Thong thuong</div></div>
+        <div class="canvas-card" data-value="Half Canvas" onclick="selectCanvas(this)"><div class="canvas-card-name">Half Canvas</div><div class="canvas-card-en">Popular / Pho bien</div></div>
+        <div class="canvas-card" data-value="Full Canvas" onclick="selectCanvas(this)"><div class="canvas-card-name">Full Canvas</div><div class="canvas-card-en">Premium / Cao cap</div></div>
+        <div class="canvas-card" data-value="Chua biet / Not sure" onclick="selectCanvas(this)"><div class="canvas-card-name">Chua biet</div><div class="canvas-card-en">Not sure — advise me</div></div>
+      </div>
+      <div id="field-canvas-err">Vui long chon chat lieu / Please select fabric construction</div>
+    </div>
     <div class="date-card" id="dc-fitting">
-      <div class="date-card-label">Ngay Fitting *</div>
+      <div class="date-card-label">Ngay Fitting / Fitting date *</div>
       <div class="date-selects">
         <select id="fit-day"></select>
         <select id="fit-month" onchange="rebuildDays('fit')"></select>
         <select id="fit-year" onchange="rebuildDays('fit')"></select>
       </div>
-      <div class="date-hint">Ngay ban den thu do lan dau</div>
+      <div class="date-hint">Ngay ban den thu do lan dau<br>The day you come in for your first fitting</div>
     </div>
-    <div class="date-err" id="err-fitting">Vui long chon ngay fitting</div>
-
+    <div class="date-err" id="err-fitting">Vui long chon ngay fitting / Please select fitting date</div>
     <div class="date-card" id="dc-receive">
-      <div class="date-card-label">Ngay nhan du kien *</div>
+      <div class="date-card-label">Ngay nhan / Expected delivery *</div>
       <div class="date-selects">
         <select id="recv-day"></select>
         <select id="recv-month" onchange="rebuildDays('recv')"></select>
         <select id="recv-year" onchange="rebuildDays('recv')"></select>
       </div>
-      <div class="date-hint">It nhat 7 ngay sau ngay fitting</div>
+      <div class="date-hint">Ngay ban muon nhan do<br>Your expected delivery date</div>
     </div>
-    <div class="date-err" id="err-receive">Ngay nhan phai sau ngay fitting it nhat 7 ngay</div>
-
+    <div class="date-err" id="err-receive">Vui long chon ngay nhan / Please select delivery date</div>
     <div class="btn-row">
-      <button class="btn-back" onclick="goPrev(3)">&larr; Quay lai</button>
-      <button class="btn-next" onclick="goNext(3)">Xem lai &rarr;</button>
+      <button class="btn-back" onclick="goPrev(3)">&#8592; Back</button>
+      <button class="btn-next" onclick="goNext(3)">Next &rarr;</button>
     </div>
   </div>
-
-  <!-- STEP 4 -->
   <div class="step-panel" id="step4">
     <div class="panel-title">Xac nhan thong tin</div>
-    <div class="panel-desc">Kiem tra lai truoc khi gui nhe.</div>
+    <div class="panel-title-sub">Review your order</div>
     <div class="review-card">
-      <div class="review-header"><div class="review-header-title">Chi tiet don dat may</div><div class="review-header-dot"></div></div>
-      <div class="review-row"><span class="rk">Ho ten</span><span class="rv" id="rv-name">-</span></div>
-      <div class="review-row"><span class="rk">So dien thoai</span><span class="rv" id="rv-phone">-</span></div>
-      <div class="review-row"><span class="rk">Dia chi</span><span class="rv" id="rv-address">-</span></div>
-      <div class="review-row"><span class="rk">Loai may do</span><span class="rv" id="rv-type">-</span></div>
-      <div class="review-row"><span class="rk">Ngay fitting</span><span class="rv" id="rv-fitting">-</span></div>
-      <div class="review-row"><span class="rk">Ngay nhan</span><span class="rv" id="rv-receive">-</span></div>
-      <div class="review-row" id="rv-note-row" style="display:none"><span class="rk">Ghi chu</span><span class="rv" id="rv-note">-</span></div>
+      <div class="review-header"><div class="review-header-title">Chi tiet don / Order details</div><div class="review-header-dot"></div></div>
+      <div class="review-row"><span class="rk">Ho ten / Name</span><span class="rv" id="rv-name">-</span></div>
+      <div class="review-row"><span class="rk">SDT / Phone</span><span class="rv" id="rv-phone">-</span></div>
+      <div class="review-row"><span class="rk">Dia chi / Address</span><span class="rv" id="rv-address">-</span></div>
+      <div class="review-row"><span class="rk">Loai may / Type</span><span class="rv" id="rv-type">-</span></div>
+      <div class="review-row"><span class="rk">Canvas</span><span class="rv" id="rv-canvas">-</span></div>
+      <div class="review-row"><span class="rk">Ngay fitting / Fitting</span><span class="rv" id="rv-fitting">-</span></div>
+      <div class="review-row"><span class="rk">Ngay nhan / Delivery</span><span class="rv" id="rv-receive">-</span></div>
+      <div class="review-row" id="rv-note-row" style="display:none"><span class="rk">Ghi chu / Notes</span><span class="rv" id="rv-note">-</span></div>
     </div>
     <div class="btn-row">
-      <button class="btn-back" onclick="goPrev(4)">&larr; Chinh sua</button>
-      <button class="btn-next" id="btnSubmit" onclick="handleSubmit()">Gui dang ky &#10003;</button>
+      <button class="btn-back" onclick="goPrev(4)">&#8592; Back</button>
+      <button class="btn-next" id="btnSubmit" onclick="handleSubmit()">Submit &#10003;</button>
     </div>
   </div>
-
-  <!-- SUCCESS -->
   <div class="success-screen" id="successScreen">
-    <div class="success-ring">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="4 12 9 17 20 6"/>
-      </svg>
-    </div>
+    <div class="success-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
     <div class="success-h">Cam on ban!</div>
-    <div class="success-p">Thong tin da duoc ghi nhan.<br>Chung toi se lien he xac nhan som nhat.</div>
+    <div class="success-h-en">Thank you!</div>
+    <div class="success-p">Thong tin da duoc ghi nhan. Chung toi se lien he xac nhan som nhat.<br><em>Your booking has been received. We will contact you shortly.</em></div>
     <div class="review-card" id="successSummary" style="text-align:left;margin-bottom:1.5rem;"></div>
-    <button class="btn-again" onclick="resetAll()">Dang ky cho khach tiep theo</button>
+    <button class="btn-again" onclick="resetAll()">Dang ky cho khach tiep theo<br><span style="font-size:0.72rem;opacity:0.7;">Register next customer</span></button>
   </div>
-
 </div>
-<div class="footer">3Pieces Tailor &copy; 2026</div>
-
+<div class="footer">3Pieces Tailor &copy; 2026 — TP. Ho Chi Minh</div>
 <script>
-var SHEET_URL = 'https://script.google.com/macros/s/AKfycby0vC8TQuIwOY2s6DQNFxdI_hEdX650b_QHuPk44cG7qs6pms_AhmgKe2wCT2tDSSVlSA/exec';
-var selectedType = '';
-
-function buildSelects() {
-  var now = new Date();
-  var cy = now.getFullYear();
-  var months = ['Thang 1','Thang 2','Thang 3','Thang 4','Thang 5','Thang 6','Thang 7','Thang 8','Thang 9','Thang 10','Thang 11','Thang 12'];
-
-  ['fit','recv'].forEach(function(p) {
-    var ms = document.getElementById(p+'-month');
-    var ys = document.getElementById(p+'-year');
-    ms.innerHTML = '<option value="">-- Thang --</option>';
-    ys.innerHTML = '<option value="">-- Nam --</option>';
-    months.forEach(function(m, i) {
-      var o = document.createElement('option');
-      o.value = i+1; o.text = m; ms.appendChild(o);
-    });
-    for (var y = cy; y <= cy+2; y++) {
-      var o = document.createElement('option'); o.value = y; o.text = y; ys.appendChild(o);
-    }
-    buildDays(p, 31);
+var SHEET_URL='https://script.google.com/macros/s/AKfycby0vC8TQuIwOY2s6DQNFxdI_hEdX650b_QHuPk44cG7qs6pms_AhmgKe2wCT2tDSSVlSA/exec';
+var selectedType='';
+var selectedCanvas='';
+function buildSelects(){
+  var now=new Date(),cy=now.getFullYear();
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  ['fit','recv'].forEach(function(p){
+    var ms=document.getElementById(p+'-month'),ys=document.getElementById(p+'-year');
+    ms.innerHTML='<option value="">Month</option>';
+    ys.innerHTML='<option value="">Year</option>';
+    months.forEach(function(m,i){var o=document.createElement('option');o.value=i+1;o.text=m;ms.appendChild(o);});
+    for(var y=cy;y<=cy+2;y++){var o=document.createElement('option');o.value=y;o.text=y;ys.appendChild(o);}
+    buildDays(p,31);
   });
 }
-
-function buildDays(p, n) {
-  var ds = document.getElementById(p+'-day');
-  var cur = ds.value;
-  ds.innerHTML = '<option value="">-- Ngay --</option>';
-  for (var d = 1; d <= n; d++) {
-    var o = document.createElement('option');
-    o.value = d; o.text = 'Ngay '+d; ds.appendChild(o);
-  }
-  if (cur && parseInt(cur) <= n) ds.value = cur;
+function buildDays(p,n){
+  var ds=document.getElementById(p+'-day'),cur=ds.value;
+  ds.innerHTML='<option value="">Day</option>';
+  for(var d=1;d<=n;d++){var o=document.createElement('option');o.value=d;o.text=d;ds.appendChild(o);}
+  if(cur&&parseInt(cur)<=n)ds.value=cur;
 }
-
-function rebuildDays(p) {
-  var m = parseInt(document.getElementById(p+'-month').value);
-  var y = parseInt(document.getElementById(p+'-year').value);
-  var n = 31;
-  if ([4,6,9,11].indexOf(m) >= 0) n = 30;
-  else if (m === 2) n = (y && y%4===0 && (y%100!==0||y%400===0)) ? 29 : 28;
-  buildDays(p, n);
+function rebuildDays(p){
+  var m=parseInt(document.getElementById(p+'-month').value),y=parseInt(document.getElementById(p+'-year').value),n=31;
+  if([4,6,9,11].indexOf(m)>=0)n=30;
+  else if(m===2)n=(y&&y%4===0&&(y%100!==0||y%400===0))?29:28;
+  buildDays(p,n);
 }
-
-function getDate(p) {
-  var d = document.getElementById(p+'-day').value;
-  var m = document.getElementById(p+'-month').value;
-  var y = document.getElementById(p+'-year').value;
-  if (!d||!m||!y) return '';
+function getDate(p){
+  var d=document.getElementById(p+'-day').value,m=document.getElementById(p+'-month').value,y=document.getElementById(p+'-year').value;
+  if(!d||!m||!y)return '';
   return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
 }
-
-function fmt(str) {
-  if (!str) return '-';
-  var s = str.split('-'); return s[2]+'/'+s[1]+'/'+s[0];
-}
-
-function selectType(card) {
+function fmt(str){if(!str)return '-';var s=str.split('-');return s[2]+'/'+s[1]+'/'+s[0];}
+function selectType(card){
   document.querySelectorAll('.type-card').forEach(function(c){c.classList.remove('selected');});
-  card.classList.add('selected');
-  selectedType = card.dataset.value;
-  document.getElementById('field-type-err').style.display = 'none';
+  card.classList.add('selected');selectedType=card.dataset.value;
+  document.getElementById('field-type-err').style.display='none';
 }
-
-function updateProgress(step) {
-  for (var i=1;i<=4;i++) {
-    var dot = document.getElementById('dot'+i);
-    var lbl = document.getElementById('lbl'+i);
-    dot.className = 'dot-circle';
-    lbl.className = 'dot-label';
-    if (i < step) { dot.classList.add('done'); dot.innerHTML = '&#10003;'; }
-    else if (i === step) { dot.classList.add('active'); dot.textContent = i; lbl.classList.add('active'); }
-    else { dot.textContent = i; }
+function selectCanvas(card){
+  document.querySelectorAll('.canvas-card').forEach(function(c){c.classList.remove('selected');});
+  card.classList.add('selected');selectedCanvas=card.dataset.value;
+  document.getElementById('field-canvas-err').style.display='none';
+}
+function updateProgress(step){
+  for(var i=1;i<=4;i++){
+    var dot=document.getElementById('dot'+i),lbl=document.getElementById('lbl'+i);
+    dot.className='dot-circle';lbl.className='dot-label';
+    if(i<step){dot.classList.add('done');dot.innerHTML='&#10003;';}
+    else if(i===step){dot.classList.add('active');dot.textContent=i;lbl.classList.add('active');}
+    else{dot.textContent=i;}
   }
-  for (var j=1;j<=3;j++) document.getElementById('line'+j).classList.toggle('done', j<step);
+  for(var j=1;j<=3;j++)document.getElementById('line'+j).classList.toggle('done',j<step);
 }
-
-function showStep(n) {
+function showStep(n){
   document.querySelectorAll('.step-panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('step'+n).classList.add('active');
   document.getElementById('progressWrap').style.display='flex';
-  updateProgress(n);
-  window.scrollTo({top:0,behavior:'smooth'});
+  updateProgress(n);window.scrollTo({top:0,behavior:'smooth'});
 }
-
-function v1() {
-  var name=document.getElementById('inp-name').value.trim();
-  var phone=document.getElementById('inp-phone').value.trim();
-  var addr=document.getElementById('inp-address').value.trim();
-  document.getElementById('field-name').classList.toggle('invalid', name.length<2);
-  document.getElementById('field-phone').classList.toggle('invalid', !/^[0-9\s\+\-]{9,12}$/.test(phone.replace(/\s/g,'')));
-  document.getElementById('field-address').classList.toggle('invalid', addr.length<5);
-  return name.length>=2 && /^[0-9\s\+\-]{9,12}$/.test(phone.replace(/\s/g,'')) && addr.length>=5;
+function v1(){
+  var name=document.getElementById('inp-name').value.trim(),phone=document.getElementById('inp-phone').value.trim(),addr=document.getElementById('inp-address').value.trim();
+  document.getElementById('field-name').classList.toggle('invalid',name.length<2);
+  document.getElementById('field-phone').classList.toggle('invalid',!/^[0-9\s\+\-]{9,12}$/.test(phone.replace(/\s/g,'')));
+  document.getElementById('field-address').classList.toggle('invalid',addr.length<5);
+  return name.length>=2&&/^[0-9\s\+\-]{9,12}$/.test(phone.replace(/\s/g,''))&&addr.length>=5;
 }
-
-function v2() {
-  if (!selectedType) { document.getElementById('field-type-err').style.display='block'; return false; }
-  return true;
-}
-
-function v3() {
-  var fit=getDate('fit'); var recv=getDate('recv'); var ok=true;
+function v2(){if(!selectedType){document.getElementById('field-type-err').style.display='block';return false;}return true;}
+function v3(){
+  var ok=true;
+  if(!selectedCanvas){document.getElementById('field-canvas-err').style.display='block';ok=false;}
+  var fit=getDate('fit'),recv=getDate('recv');
   document.getElementById('dc-fitting').classList.toggle('invalid',!fit);
   document.getElementById('err-fitting').classList.toggle('show',!fit);
-  if (!fit) ok=false;
-  if (fit && recv) {
-    var bad=(new Date(recv)-new Date(fit))/86400000 < 7;
-    document.getElementById('dc-receive').classList.toggle('invalid',bad);
-    document.getElementById('err-receive').classList.toggle('show',bad);
-    if (bad) ok=false;
-  } else {
-    document.getElementById('dc-receive').classList.toggle('invalid',!recv);
-    document.getElementById('err-receive').classList.toggle('show',!recv);
-    if (!recv) ok=false;
-  }
+  if(!fit)ok=false;
+  document.getElementById('dc-receive').classList.toggle('invalid',!recv);
+  document.getElementById('err-receive').classList.toggle('show',!recv);
+  if(!recv)ok=false;
   return ok;
 }
-
-function goNext(step) {
-  if (step===1 && !v1()) return;
-  if (step===2 && !v2()) return;
-  if (step===3 && !v3()) return;
-  if (step===3) {
-    document.getElementById('rv-name').textContent = document.getElementById('inp-name').value.trim();
-    document.getElementById('rv-phone').textContent = document.getElementById('inp-phone').value.trim();
-    document.getElementById('rv-address').textContent = document.getElementById('inp-address').value.trim();
-    document.getElementById('rv-type').textContent = selectedType;
-    document.getElementById('rv-fitting').textContent = fmt(getDate('fit'));
-    document.getElementById('rv-receive').textContent = fmt(getDate('recv'));
+function goNext(step){
+  if(step===1&&!v1())return;if(step===2&&!v2())return;if(step===3&&!v3())return;
+  if(step===3){
+    document.getElementById('rv-name').textContent=document.getElementById('inp-name').value.trim();
+    document.getElementById('rv-phone').textContent=document.getElementById('inp-phone').value.trim();
+    document.getElementById('rv-address').textContent=document.getElementById('inp-address').value.trim();
+    document.getElementById('rv-type').textContent=selectedType;
+    document.getElementById('rv-canvas').textContent=selectedCanvas;
+    document.getElementById('rv-fitting').textContent=fmt(getDate('fit'));
+    document.getElementById('rv-receive').textContent=fmt(getDate('recv'));
     var note=document.getElementById('inp-note').value.trim();
     document.getElementById('rv-note-row').style.display=note?'flex':'none';
     document.getElementById('rv-note').textContent=note;
   }
   showStep(step+1);
 }
-
-function goPrev(step) { showStep(step-1); }
-
+function goPrev(step){showStep(step-1);}
 async function handleSubmit(){
   var btn=document.getElementById('btnSubmit');
-  btn.classList.add('loading');
-  btn.textContent='Sending...';
-
-  var fitStr=getDate('fit');
-  var recvStr=getDate('recv');
-
+  btn.classList.add('loading');btn.textContent='Sending...';
+  var fitStr=getDate('fit'),recvStr=getDate('recv');
   var entry={
     name:document.getElementById('inp-name').value.trim(),
     phone:document.getElementById('inp-phone').value.trim(),
     address:document.getElementById('inp-address').value.trim(),
     type:selectedType,
     canvas:selectedCanvas,
-    fittingDate:fitStr,
-    receiveDate:recvStr,
-    note:document.getElementById('inp-note').value.trim()
+    fittingDate:fmt(fitStr),
+    receiveDate:fmt(recvStr),
+    customerNote:document.getElementById('inp-note').value.trim(),
+    source:'QR Form'
   };
-
   try{
     await fetch(SHEET_URL,{
       method:'POST',
       mode:'no-cors',
-      headers:{
-        'Content-Type':'text/plain;charset=utf-8'
-      },
+      headers:{'Content-Type':'application/json'},
       body:JSON.stringify(entry)
     });
-  }catch(e){
-    console.error(e);
-    alert('Gui that bai');
-    btn.classList.remove('loading');
-    btn.textContent='Submit';
-    return;
-  }
-
+  }catch(e){console.warn(e);}
   document.getElementById('step4').classList.remove('active');
   document.getElementById('progressWrap').style.display='none';
   document.getElementById('successScreen').style.display='block';
-
   var days=Math.round((new Date(recvStr)-new Date(fitStr))/86400000);
   document.getElementById('successSummary').innerHTML=
     '<div class="review-header"><div class="review-header-title">'+entry.name+'</div><div class="review-header-dot"></div></div>'+
     '<div class="review-row"><span class="rk">Phone</span><span class="rv">'+entry.phone+'</span></div>'+
     '<div class="review-row"><span class="rk">Type / Loai may</span><span class="rv">'+entry.type+'</span></div>'+
     '<div class="review-row"><span class="rk">Canvas</span><span class="rv">'+entry.canvas+'</span></div>'+
-    '<div class="review-row"><span class="rk">Fitting</span><span class="rv">'+fmt(fitStr)+'</span></div>'+
-    '<div class="review-row"><span class="rk">Delivery / Nhan do</span><span class="rv">'+fmt(recvStr)+'</span></div>'+
+    '<div class="review-row"><span class="rk">Fitting</span><span class="rv">'+entry.fittingDate+'</span></div>'+
+    '<div class="review-row"><span class="rk">Delivery / Nhan do</span><span class="rv">'+entry.receiveDate+'</span></div>'+
     '<div class="review-row"><span class="rk">Duration / Thoi gian may</span><span class="rv">'+days+' days</span></div>';
-
-  btn.classList.remove('loading');
-  btn.textContent='Submit';
+  btn.classList.remove('loading');btn.textContent='Submit';
   window.scrollTo({top:0,behavior:'smooth'});
 }
-  try {
-    await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)});
-  } catch(e){console.warn(e);}
-  document.getElementById('step4').classList.remove('active');
-  document.getElementById('progressWrap').style.display='none';
-  document.getElementById('successScreen').style.display='block';
-  var days=Math.round((new Date(recvStr)-new Date(fitStr))/86400000);
-  document.getElementById('successSummary').innerHTML=
-    '<div class="review-header"><div class="review-header-title">'+entry.name+'</div><div class="review-header-dot"></div></div>'+
-    '<div class="review-row"><span class="rk">SDT</span><span class="rv">'+entry.phone+'</span></div>'+
-    '<div class="review-row"><span class="rk">Loai may</span><span class="rv">'+entry.type+'</span></div>'+
-    '<div class="review-row"><span class="rk">Ngay fitting</span><span class="rv">'+entry.fitting+'</span></div>'+
-    '<div class="review-row"><span class="rk">Ngay nhan</span><span class="rv">'+entry.receive+'</span></div>'+
-    '<div class="review-row"><span class="rk">Thoi gian may</span><span class="rv">'+days+' ngay</span></div>';
-  btn.classList.remove('loading'); btn.textContent='Gui dang ky';
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-function resetAll() {
+function resetAll(){
   ['inp-name','inp-phone','inp-address','inp-note'].forEach(function(id){document.getElementById(id).value='';});
   ['fit-day','fit-month','fit-year','recv-day','recv-month','recv-year'].forEach(function(id){document.getElementById(id).selectedIndex=0;});
   document.querySelectorAll('.type-card').forEach(function(c){c.classList.remove('selected');});
-  selectedType='';
+  document.querySelectorAll('.canvas-card').forEach(function(c){c.classList.remove('selected');});
+  selectedType='';selectedCanvas='';
   ['field-name','field-phone','field-address'].forEach(function(id){document.getElementById(id).classList.remove('invalid');});
   ['dc-fitting','dc-receive'].forEach(function(id){document.getElementById(id).classList.remove('invalid');});
   ['err-fitting','err-receive'].forEach(function(id){document.getElementById(id).classList.remove('show');});
   document.getElementById('successScreen').style.display='none';
   showStep(1);
 }
-
 buildSelects();
 </script>
 </body>
