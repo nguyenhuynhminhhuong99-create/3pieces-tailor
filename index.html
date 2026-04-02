@@ -98,6 +98,7 @@
   <div class="hero-sub">Bespoke Suit &amp; Handcrafted Leather Shoes</div>
   <div class="hero-title">Chao mung ban den voi hanh trinh may do<br><em>Welcome to your bespoke journey</em></div>
 </div>
+
 <div class="progress-wrap" id="progressWrap">
   <div class="step-dot"><div class="dot-circle active" id="dot1">1</div><div class="dot-label active" id="lbl1">Thong tin<br>Info</div></div>
   <div class="step-line" id="line1"></div>
@@ -107,6 +108,7 @@
   <div class="step-line" id="line3"></div>
   <div class="step-dot"><div class="dot-circle" id="dot4">4</div><div class="dot-label" id="lbl4">Xac nhan<br>Confirm</div></div>
 </div>
+
 <div class="form-wrap">
   <div class="step-panel active" id="step1">
     <div class="panel-title">Thong tin cua ban</div>
@@ -128,6 +130,7 @@
     </div>
     <div class="btn-row"><button class="btn-next" onclick="goNext(1)">Next &rarr;</button></div>
   </div>
+
   <div class="step-panel" id="step2">
     <div class="panel-title">Loai may do</div>
     <div class="panel-title-sub">Select garment type</div>
@@ -151,6 +154,7 @@
       <button class="btn-next" onclick="goNext(2)">Next &rarr;</button>
     </div>
   </div>
+
   <div class="step-panel" id="step3">
     <div class="panel-title">Lich hen</div>
     <div class="panel-title-sub">Schedule &amp; fabric construction</div>
@@ -160,7 +164,7 @@
         <div class="canvas-card" data-value="Fused" onclick="selectCanvas(this)"><div class="canvas-card-name">Fused</div><div class="canvas-card-en">Standard / Thong thuong</div></div>
         <div class="canvas-card" data-value="Half Canvas" onclick="selectCanvas(this)"><div class="canvas-card-name">Half Canvas</div><div class="canvas-card-en">Popular / Pho bien</div></div>
         <div class="canvas-card" data-value="Full Canvas" onclick="selectCanvas(this)"><div class="canvas-card-name">Full Canvas</div><div class="canvas-card-en">Premium / Cao cap</div></div>
-        <div class="canvas-card" data-value="Chua biet / Not sure" onclick="selectCanvas(this)"><div class="canvas-card-name">Chua biet</div><div class="canvas-card-en">Not sure — advise me</div></div>
+        <div class="canvas-card" data-value="Chua biet / Not sure" onclick="selectCanvas(this)"><div class="canvas-card-name">Chua biet</div><div class="canvas-card-en">Not sure - advise me</div></div>
       </div>
       <div id="field-canvas-err">Vui long chon chat lieu / Please select fabric construction</div>
     </div>
@@ -189,6 +193,7 @@
       <button class="btn-next" onclick="goNext(3)">Next &rarr;</button>
     </div>
   </div>
+
   <div class="step-panel" id="step4">
     <div class="panel-title">Xac nhan thong tin</div>
     <div class="panel-title-sub">Review your order</div>
@@ -208,6 +213,7 @@
       <button class="btn-next" id="btnSubmit" onclick="handleSubmit()">Submit &#10003;</button>
     </div>
   </div>
+
   <div class="success-screen" id="successScreen">
     <div class="success-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
     <div class="success-h">Cam on ban!</div>
@@ -217,11 +223,14 @@
     <button class="btn-again" onclick="resetAll()">Dang ky cho khach tiep theo<br><span style="font-size:0.72rem;opacity:0.7;">Register next customer</span></button>
   </div>
 </div>
-<div class="footer">3Pieces Tailor &copy; 2026 — TP. Ho Chi Minh</div>
+
+<div class="footer">3Pieces Tailor &copy; 2026 - TP. Ho Chi Minh</div>
+
 <script>
-https://script.googleusercontent.com/macros/echo?user_content_key=AWDtjMXGe5DjtUs9wFyEI0OImgVgGxUJkI8rNrrAXE7XgJXSC-ek4zTEEICnuBUWxGHA42PMtM_llSkKOTwqf5dCtjmIT8PRn-BCHoyGjdAxPwz4BYJi894qN92fI9mtUkoh9pt9NehQkUVDgxls7f9ERh6A0-MImhR0_HOW-khI1kC94orb7edym2eilvxoAS5eMp1vPFgq1FHBkwQJ2jVLzG-6T4eCANvyftRJHxT_otLby20mfrOuISBjE0kHoDhD7UUX5L8JzF7lALZGZrMsgMzbyfzp9IozA4zFRO16&lib=Mekl2cSaHYpejCunFmmmp_TV4JbtyrQ8Q;
+var SHEET_URL='https://script.google.com/macros/s/AKfycbzJBh7XjCPw8lDP5hGuGDcdvUm1bWb2Ls2sSCKIvfdR2mdXWrAj9s2gGVJl3WAuc3dr6Q/exec';
 var selectedType='';
 var selectedCanvas='';
+
 function buildSelects(){
   var now=new Date(),cy=now.getFullYear();
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -234,34 +243,41 @@ function buildSelects(){
     buildDays(p,31);
   });
 }
+
 function buildDays(p,n){
   var ds=document.getElementById(p+'-day'),cur=ds.value;
   ds.innerHTML='<option value="">Day</option>';
   for(var d=1;d<=n;d++){var o=document.createElement('option');o.value=d;o.text=d;ds.appendChild(o);}
   if(cur&&parseInt(cur)<=n)ds.value=cur;
 }
+
 function rebuildDays(p){
   var m=parseInt(document.getElementById(p+'-month').value),y=parseInt(document.getElementById(p+'-year').value),n=31;
   if([4,6,9,11].indexOf(m)>=0)n=30;
   else if(m===2)n=(y&&y%4===0&&(y%100!==0||y%400===0))?29:28;
   buildDays(p,n);
 }
+
 function getDate(p){
   var d=document.getElementById(p+'-day').value,m=document.getElementById(p+'-month').value,y=document.getElementById(p+'-year').value;
   if(!d||!m||!y)return '';
   return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
 }
+
 function fmt(str){if(!str)return '-';var s=str.split('-');return s[2]+'/'+s[1]+'/'+s[0];}
+
 function selectType(card){
   document.querySelectorAll('.type-card').forEach(function(c){c.classList.remove('selected');});
   card.classList.add('selected');selectedType=card.dataset.value;
   document.getElementById('field-type-err').style.display='none';
 }
+
 function selectCanvas(card){
   document.querySelectorAll('.canvas-card').forEach(function(c){c.classList.remove('selected');});
   card.classList.add('selected');selectedCanvas=card.dataset.value;
   document.getElementById('field-canvas-err').style.display='none';
 }
+
 function updateProgress(step){
   for(var i=1;i<=4;i++){
     var dot=document.getElementById('dot'+i),lbl=document.getElementById('lbl'+i);
@@ -272,12 +288,14 @@ function updateProgress(step){
   }
   for(var j=1;j<=3;j++)document.getElementById('line'+j).classList.toggle('done',j<step);
 }
+
 function showStep(n){
   document.querySelectorAll('.step-panel').forEach(function(p){p.classList.remove('active');});
   document.getElementById('step'+n).classList.add('active');
   document.getElementById('progressWrap').style.display='flex';
   updateProgress(n);window.scrollTo({top:0,behavior:'smooth'});
 }
+
 function v1(){
   var name=document.getElementById('inp-name').value.trim(),phone=document.getElementById('inp-phone').value.trim(),addr=document.getElementById('inp-address').value.trim();
   document.getElementById('field-name').classList.toggle('invalid',name.length<2);
@@ -285,7 +303,9 @@ function v1(){
   document.getElementById('field-address').classList.toggle('invalid',addr.length<5);
   return name.length>=2&&/^[0-9\s\+\-]{9,12}$/.test(phone.replace(/\s/g,''))&&addr.length>=5;
 }
+
 function v2(){if(!selectedType){document.getElementById('field-type-err').style.display='block';return false;}return true;}
+
 function v3(){
   var ok=true;
   if(!selectedCanvas){document.getElementById('field-canvas-err').style.display='block';ok=false;}
@@ -298,8 +318,11 @@ function v3(){
   if(!recv)ok=false;
   return ok;
 }
+
 function goNext(step){
-  if(step===1&&!v1())return;if(step===2&&!v2())return;if(step===3&&!v3())return;
+  if(step===1&&!v1())return;
+  if(step===2&&!v2())return;
+  if(step===3&&!v3())return;
   if(step===3){
     document.getElementById('rv-name').textContent=document.getElementById('inp-name').value.trim();
     document.getElementById('rv-phone').textContent=document.getElementById('inp-phone').value.trim();
@@ -314,28 +337,56 @@ function goNext(step){
   }
   showStep(step+1);
 }
+
 function goPrev(step){showStep(step-1);}
+
 async function handleSubmit(){
   var btn=document.getElementById('btnSubmit');
-  btn.classList.add('loading');btn.textContent='Sending...';
+  btn.classList.add('loading');
+  btn.textContent='Sending...';
+
   var fitStr=getDate('fit'),recvStr=getDate('recv');
-  var entry={name:document.getElementById('inp-name').value.trim(),phone:document.getElementById('inp-phone').value.trim(),address:document.getElementById('inp-address').value.trim(),type:selectedType,canvas:selectedCanvas,fitting:fmt(fitStr),receive:fmt(recvStr),note:document.getElementById('inp-note').value.trim()};
-  try{await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)});}catch(e){console.warn(e);}
+  var entry={
+    name:document.getElementById('inp-name').value.trim(),
+    phone:document.getElementById('inp-phone').value.trim(),
+    address:document.getElementById('inp-address').value.trim(),
+    type:selectedType,
+    canvas:selectedCanvas,
+    fittingDate:fitStr,
+    receiveDate:recvStr,
+    note:document.getElementById('inp-note').value.trim()
+  };
+
+  try{
+    await fetch(SHEET_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(entry)
+    });
+  }catch(e){
+    console.warn(e);
+  }
+
   document.getElementById('step4').classList.remove('active');
   document.getElementById('progressWrap').style.display='none';
   document.getElementById('successScreen').style.display='block';
+
   var days=Math.round((new Date(recvStr)-new Date(fitStr))/86400000);
   document.getElementById('successSummary').innerHTML=
     '<div class="review-header"><div class="review-header-title">'+entry.name+'</div><div class="review-header-dot"></div></div>'+
     '<div class="review-row"><span class="rk">Phone</span><span class="rv">'+entry.phone+'</span></div>'+
     '<div class="review-row"><span class="rk">Type / Loai may</span><span class="rv">'+entry.type+'</span></div>'+
     '<div class="review-row"><span class="rk">Canvas</span><span class="rv">'+entry.canvas+'</span></div>'+
-    '<div class="review-row"><span class="rk">Fitting</span><span class="rv">'+entry.fitting+'</span></div>'+
-    '<div class="review-row"><span class="rk">Delivery / Nhan do</span><span class="rv">'+entry.receive+'</span></div>'+
+    '<div class="review-row"><span class="rk">Fitting</span><span class="rv">'+fmt(fitStr)+'</span></div>'+
+    '<div class="review-row"><span class="rk">Delivery / Nhan do</span><span class="rv">'+fmt(recvStr)+'</span></div>'+
     '<div class="review-row"><span class="rk">Duration / Thoi gian may</span><span class="rv">'+days+' days</span></div>';
-  btn.classList.remove('loading');btn.textContent='Submit';
+
+  btn.classList.remove('loading');
+  btn.textContent='Submit';
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
 function resetAll(){
   ['inp-name','inp-phone','inp-address','inp-note'].forEach(function(id){document.getElementById(id).value='';});
   ['fit-day','fit-month','fit-year','recv-day','recv-month','recv-year'].forEach(function(id){document.getElementById(id).selectedIndex=0;});
@@ -348,6 +399,7 @@ function resetAll(){
   document.getElementById('successScreen').style.display='none';
   showStep(1);
 }
+
 buildSelects();
 </script>
 </body>
