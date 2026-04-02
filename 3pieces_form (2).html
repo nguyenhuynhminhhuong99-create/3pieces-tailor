@@ -394,19 +394,60 @@ function goNext(step) {
 
 function goPrev(step) { showStep(step-1); }
 
-async function handleSubmit() {
+async function handleSubmit(){
   var btn=document.getElementById('btnSubmit');
-  btn.classList.add('loading'); btn.textContent='Dang gui...';
-  var fitStr=getDate('fit'); var recvStr=getDate('recv');
+  btn.classList.add('loading');
+  btn.textContent='Sending...';
+
+  var fitStr=getDate('fit');
+  var recvStr=getDate('recv');
+
   var entry={
-    name: document.getElementById('inp-name').value.trim(),
-    phone: document.getElementById('inp-phone').value.trim(),
-    address: document.getElementById('inp-address').value.trim(),
-    type: selectedType,
-    fitting: fmt(fitStr),
-    receive: fmt(recvStr),
-    note: document.getElementById('inp-note').value.trim()
+    name:document.getElementById('inp-name').value.trim(),
+    phone:document.getElementById('inp-phone').value.trim(),
+    address:document.getElementById('inp-address').value.trim(),
+    type:selectedType,
+    canvas:selectedCanvas,
+    fittingDate:fitStr,
+    receiveDate:recvStr,
+    note:document.getElementById('inp-note').value.trim()
   };
+
+  try{
+    await fetch(SHEET_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{
+        'Content-Type':'text/plain;charset=utf-8'
+      },
+      body:JSON.stringify(entry)
+    });
+  }catch(e){
+    console.error(e);
+    alert('Gui that bai');
+    btn.classList.remove('loading');
+    btn.textContent='Submit';
+    return;
+  }
+
+  document.getElementById('step4').classList.remove('active');
+  document.getElementById('progressWrap').style.display='none';
+  document.getElementById('successScreen').style.display='block';
+
+  var days=Math.round((new Date(recvStr)-new Date(fitStr))/86400000);
+  document.getElementById('successSummary').innerHTML=
+    '<div class="review-header"><div class="review-header-title">'+entry.name+'</div><div class="review-header-dot"></div></div>'+
+    '<div class="review-row"><span class="rk">Phone</span><span class="rv">'+entry.phone+'</span></div>'+
+    '<div class="review-row"><span class="rk">Type / Loai may</span><span class="rv">'+entry.type+'</span></div>'+
+    '<div class="review-row"><span class="rk">Canvas</span><span class="rv">'+entry.canvas+'</span></div>'+
+    '<div class="review-row"><span class="rk">Fitting</span><span class="rv">'+fmt(fitStr)+'</span></div>'+
+    '<div class="review-row"><span class="rk">Delivery / Nhan do</span><span class="rv">'+fmt(recvStr)+'</span></div>'+
+    '<div class="review-row"><span class="rk">Duration / Thoi gian may</span><span class="rv">'+days+' days</span></div>';
+
+  btn.classList.remove('loading');
+  btn.textContent='Submit';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
   try {
     await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)});
   } catch(e){console.warn(e);}
