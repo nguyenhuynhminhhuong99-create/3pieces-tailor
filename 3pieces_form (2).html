@@ -68,7 +68,7 @@
   .date-err{font-size:0.72rem;color:var(--error);margin-bottom:1rem;display:none;}
   .date-err.show{display:block;}
   .btn-row{display:flex;gap:0.75rem;margin-top:2rem;}
-  .btn-back{flex:0 0 auto;padding:0.9rem 1.25rem;background:transparent;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.875rem;color:var(--muted);cursor:pointer;transition:all 0.2s;}
+  .btn-back{flex:0 0 auto;padding:0.9rem 1.25rem;background:transparent;border:1.5px solid var(--border);border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.875rem;color:var(--muted);cursor:pointer;}
   .btn-back:active{opacity:0.7;}
   .btn-next{flex:1;padding:0.9rem;background:var(--dark);border:none;border-radius:var(--radius-sm);font-family:'DM Sans',sans-serif;font-size:0.9rem;font-weight:500;color:#F0EAD8;cursor:pointer;transition:background 0.2s;}
   .btn-next:active{transform:scale(0.98);}
@@ -108,9 +108,27 @@
   <div class="step-dot"><div class="dot-circle" id="dot4">4</div><div class="dot-label" id="lbl4">Xac nhan<br>Confirm</div></div>
 </div>
 <div class="form-wrap">
+
+  <!-- STEP 1 -->
   <div class="step-panel active" id="step1">
     <div class="panel-title">Thong tin cua ban</div>
     <div class="panel-title-sub">Your information</div>
+
+    <div class="field" id="field-branch">
+      <label>Chi nhanh <span>/ Branch *</span></label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.25rem;">
+        <div class="canvas-card" data-value="Quan 7" onclick="selectBranch(this)">
+          <div class="canvas-card-name">Quan 7</div>
+          <div class="canvas-card-en">District 7</div>
+        </div>
+        <div class="canvas-card" data-value="Quan 3" onclick="selectBranch(this)">
+          <div class="canvas-card-name">Quan 3</div>
+          <div class="canvas-card-en">District 3</div>
+        </div>
+      </div>
+      <div id="field-branch-err" style="font-size:0.72rem;color:#9B3A2A;display:none;margin-top:0.5rem;">Vui long chon chi nhanh / Please select a branch</div>
+    </div>
+
     <div class="field" id="field-name">
       <label>Ho &amp; Ten <span>/ Full name *</span></label>
       <input type="text" id="inp-name" placeholder="Nguyen Van A" autocomplete="name">
@@ -128,6 +146,8 @@
     </div>
     <div class="btn-row"><button class="btn-next" onclick="goNext(1)">Next &rarr;</button></div>
   </div>
+
+  <!-- STEP 2 -->
   <div class="step-panel" id="step2">
     <div class="panel-title">Loai may do</div>
     <div class="panel-title-sub">Select garment type</div>
@@ -151,6 +171,8 @@
       <button class="btn-next" onclick="goNext(2)">Next &rarr;</button>
     </div>
   </div>
+
+  <!-- STEP 3 -->
   <div class="step-panel" id="step3">
     <div class="panel-title">Lich hen</div>
     <div class="panel-title-sub">Schedule &amp; fabric construction</div>
@@ -189,11 +211,14 @@
       <button class="btn-next" onclick="goNext(3)">Next &rarr;</button>
     </div>
   </div>
+
+  <!-- STEP 4 -->
   <div class="step-panel" id="step4">
     <div class="panel-title">Xac nhan thong tin</div>
     <div class="panel-title-sub">Review your order</div>
     <div class="review-card">
       <div class="review-header"><div class="review-header-title">Chi tiet don / Order details</div><div class="review-header-dot"></div></div>
+      <div class="review-row"><span class="rk">Chi nhanh / Branch</span><span class="rv" id="rv-branch">-</span></div>
       <div class="review-row"><span class="rk">Ho ten / Name</span><span class="rv" id="rv-name">-</span></div>
       <div class="review-row"><span class="rk">SDT / Phone</span><span class="rv" id="rv-phone">-</span></div>
       <div class="review-row"><span class="rk">Dia chi / Address</span><span class="rv" id="rv-address">-</span></div>
@@ -208,6 +233,8 @@
       <button class="btn-next" id="btnSubmit" onclick="handleSubmit()">Submit &#10003;</button>
     </div>
   </div>
+
+  <!-- SUCCESS -->
   <div class="success-screen" id="successScreen">
     <div class="success-ring"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12 9 17 20 6"/></svg></div>
     <div class="success-h">Cam on ban!</div>
@@ -222,6 +249,8 @@
 var SHEET_URL='https://script.google.com/macros/s/AKfycbx047JpjFVnQ6jKBsPhViSAeO_T-c47jtIbQ7U1PEVFzepaY9b4ZNBXicTbKh9IvJHTfQ/exec';
 var selectedType='';
 var selectedCanvas='';
+var selectedBranch='';
+
 function buildSelects(){
   var now=new Date(),cy=now.getFullYear();
   var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -252,6 +281,13 @@ function getDate(p){
   return y+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
 }
 function fmt(str){if(!str)return '-';var s=str.split('-');return s[2]+'/'+s[1]+'/'+s[0];}
+
+function selectBranch(card){
+  document.querySelectorAll('#field-branch .canvas-card').forEach(function(c){c.classList.remove('selected');});
+  card.classList.add('selected');
+  selectedBranch=card.dataset.value;
+  document.getElementById('field-branch-err').style.display='none';
+}
 function selectType(card){
   document.querySelectorAll('.type-card').forEach(function(c){c.classList.remove('selected');});
   card.classList.add('selected');selectedType=card.dataset.value;
@@ -280,10 +316,12 @@ function showStep(n){
 }
 function v1(){
   var name=document.getElementById('inp-name').value.trim(),phone=document.getElementById('inp-phone').value.trim(),addr=document.getElementById('inp-address').value.trim();
+  var branchErr=!selectedBranch;
+  document.getElementById('field-branch-err').style.display=branchErr?'block':'none';
   document.getElementById('field-name').classList.toggle('invalid',name.length<2);
   document.getElementById('field-phone').classList.toggle('invalid',!/^[0-9\s\+\-]{9,12}$/.test(phone.replace(/\s/g,'')));
   document.getElementById('field-address').classList.toggle('invalid',addr.length<5);
-  return name.length>=2&&/^[0-9\s\+\-]{9,12}$/.test(phone.replace(/\s/g,''))&&addr.length>=5;
+  return !branchErr&&name.length>=2&&/^[0-9\s\+\-]{9,12}$/.test(phone.replace(/\s/g,''))&&addr.length>=5;
 }
 function v2(){if(!selectedType){document.getElementById('field-type-err').style.display='block';return false;}return true;}
 function v3(){
@@ -301,6 +339,7 @@ function v3(){
 function goNext(step){
   if(step===1&&!v1())return;if(step===2&&!v2())return;if(step===3&&!v3())return;
   if(step===3){
+    document.getElementById('rv-branch').textContent=selectedBranch;
     document.getElementById('rv-name').textContent=document.getElementById('inp-name').value.trim();
     document.getElementById('rv-phone').textContent=document.getElementById('inp-phone').value.trim();
     document.getElementById('rv-address').textContent=document.getElementById('inp-address').value.trim();
@@ -320,6 +359,7 @@ async function handleSubmit(){
   btn.classList.add('loading');btn.textContent='Sending...';
   var fitStr=getDate('fit'),recvStr=getDate('recv');
   var entry={
+    branch:selectedBranch,
     name:document.getElementById('inp-name').value.trim(),
     phone:document.getElementById('inp-phone').value.trim(),
     address:document.getElementById('inp-address').value.trim(),
@@ -330,20 +370,14 @@ async function handleSubmit(){
     customerNote:document.getElementById('inp-note').value.trim(),
     source:'QR Form'
   };
-  try{
-    await fetch(SHEET_URL,{
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(entry)
-    });
-  }catch(e){console.warn(e);}
+  try{await fetch(SHEET_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(entry)});}catch(e){console.warn(e);}
   document.getElementById('step4').classList.remove('active');
   document.getElementById('progressWrap').style.display='none';
   document.getElementById('successScreen').style.display='block';
   var days=Math.round((new Date(recvStr)-new Date(fitStr))/86400000);
   document.getElementById('successSummary').innerHTML=
     '<div class="review-header"><div class="review-header-title">'+entry.name+'</div><div class="review-header-dot"></div></div>'+
+    '<div class="review-row"><span class="rk">Chi nhanh / Branch</span><span class="rv">'+entry.branch+'</span></div>'+
     '<div class="review-row"><span class="rk">Phone</span><span class="rv">'+entry.phone+'</span></div>'+
     '<div class="review-row"><span class="rk">Type / Loai may</span><span class="rv">'+entry.type+'</span></div>'+
     '<div class="review-row"><span class="rk">Canvas</span><span class="rv">'+entry.canvas+'</span></div>'+
@@ -356,12 +390,12 @@ async function handleSubmit(){
 function resetAll(){
   ['inp-name','inp-phone','inp-address','inp-note'].forEach(function(id){document.getElementById(id).value='';});
   ['fit-day','fit-month','fit-year','recv-day','recv-month','recv-year'].forEach(function(id){document.getElementById(id).selectedIndex=0;});
-  document.querySelectorAll('.type-card').forEach(function(c){c.classList.remove('selected');});
-  document.querySelectorAll('.canvas-card').forEach(function(c){c.classList.remove('selected');});
-  selectedType='';selectedCanvas='';
+  document.querySelectorAll('.type-card,.canvas-card').forEach(function(c){c.classList.remove('selected');});
+  selectedType='';selectedCanvas='';selectedBranch='';
   ['field-name','field-phone','field-address'].forEach(function(id){document.getElementById(id).classList.remove('invalid');});
   ['dc-fitting','dc-receive'].forEach(function(id){document.getElementById(id).classList.remove('invalid');});
   ['err-fitting','err-receive'].forEach(function(id){document.getElementById(id).classList.remove('show');});
+  document.getElementById('field-branch-err').style.display='none';
   document.getElementById('successScreen').style.display='none';
   showStep(1);
 }
